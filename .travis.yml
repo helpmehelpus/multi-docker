@@ -5,11 +5,9 @@ services:
 
 before_install:
   - docker build -t adrianorft/react-test -f ./client/Dockerfile.dev ./client
-  # docker build otherproject
 
 script:
   - docker run -e CI=true adrianorft/react-test npm run test
-  # docker run other project
 
 after_success:
   - docker build -t adrianorft/multi-client ./client
