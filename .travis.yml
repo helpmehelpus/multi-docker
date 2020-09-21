@@ -1,0 +1,24 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t adrianorft/react-test -f ./client/Dockerfile.dev ./client
+  # docker build otherproject
+
+script:
+  - docker run adrianorft/react-test npm test -- --coverage
+  # docker run other project
+
+after_success:
+  - docker build -t adrianorft/multi-client ./client
+  - docker build -t adrianorft/multi-nginx ./nginx
+  - docker build -t adrianorft/multi-server ./server
+  - docker build -t adrianorft/multi-worker ./worker
+# Push images to dockerhub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push adrianorft/multi-client
+  - docker push adrianorft/multi-nginx
+  - docker push adrianorft/multi-server
+  - docker push adrianorft/multi-worker
